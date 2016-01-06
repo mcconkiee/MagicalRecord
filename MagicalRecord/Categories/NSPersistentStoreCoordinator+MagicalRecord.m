@@ -158,12 +158,14 @@ NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore = @"kMagicalReco
         if (cloudURL)   //iCloud is available
         {
             NSMutableDictionary *iCloudOptions = [[NSMutableDictionary alloc] init];
+#if TARGET_OS_WATCH
+#else
             [iCloudOptions setObject:cloudURL forKey:NSPersistentStoreUbiquitousContentURLKey];
-
             if ([contentNameKey length] > 0)
             {
                 [iCloudOptions setObject:contentNameKey forKey:NSPersistentStoreUbiquitousContentNameKey];
             }
+#endif
 
             options = [options MR_dictionaryByMergingDictionary:iCloudOptions];
         }
@@ -181,6 +183,8 @@ NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore = @"kMagicalReco
         }
         else
         {
+#if TARGET_OS_WATCH    
+#else
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
             [self lock];
@@ -190,6 +194,8 @@ NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore = @"kMagicalReco
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
             [self unlock];
 #pragma clang diagnostic pop
+#endif
+
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{
